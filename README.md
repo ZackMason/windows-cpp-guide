@@ -35,6 +35,7 @@ too bad, and you will catch lots of mistakes. Best to use this from day one thou
 - RemedyBG - amazing debugger, only on windows
 - RenderDoc - if doing graphics this is required, use after 5-10 minutes of being stuck
 - Milton - infinite drawing board - Sketching problems is very underrated, especially in game dev
+- cmder - console emulator with git and linux commands
 
 # Libraries
 
@@ -220,7 +221,7 @@ endforeach()
 - stl has a few good parts - span, string_view, array, bitset, tuple, variant
 - stl has a lot of bad parts - vector, map, set, string, function
 - writing code that is easy to step through in a debugger is vital, functional programming greatly hinders this.
-- 
+
 
 
 
