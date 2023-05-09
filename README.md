@@ -1,6 +1,8 @@
 # windows-cpp-guide
 Collection of thoughts on productive windows workflows, specifically for cpp game development
 
+This page is very early in development
+
 Before continuing I am putting this here.
 
 For the love of god please turn on your compiler warnings when programming in C/C++
