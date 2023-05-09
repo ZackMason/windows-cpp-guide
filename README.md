@@ -1,7 +1,7 @@
 # windows-cpp-guide
 Collection of thoughts on productive windows workflows, specifically for cpp game development
 
-This page is very early in development (May 9, 2023)
+This page is very early in development (May 8, 2023)
 
 Before continuing I am putting this here.
 
@@ -11,11 +11,16 @@ Feel free to disable things like unused variables and functions, and push/pop di
 
 The large majority of bugs that I see people asking would be caught if compiler warnings were properly set up
 
+Turning it on for the first time in projects that are well in to development can be daunting, but it's really not
+too bad, and you will catch lots of mistakes. Best to use this from day one though.
+
+
 # Table Of Contents
 - [Tools](#tools)
 - [Libraries](#libraries)
 - [VSCode](#vs-code)
 - [Compiling](#compiling)
+- [Hot Takes](#hot-takes)
 
 # Tools
 
@@ -203,7 +208,19 @@ foreach(lib ${PHSYX_LIBS})
 endforeach()
 ```
 
-
+# Hot Takes
+- linux sucks, but that's why we're here, not a hot take
+- null terminated strings suck
+- thus all str* functions suck, use mem* instead
+- no really, they are terrible, stop using them, always store the size
+- malloc sucks, use an allocation pattern that supports many different many allocation backends
+- free is bloat
+- cpp is a nice language when used right (read not by me)
+- memory management should alway happen at the highest possible level, nodes allocating and managing other nodes is a nightmare of life time spaghetti. Always try to do allocations at least one level up the call stack.
+- stl has a few good parts - span, string_view, array, bitset, tuple, variant
+- stl has a lot of bad parts - vector, map, set, string, function
+- writing code that is easy to step through in a debugger is vital, functional programming greatly hinders this.
+- 
 
 
 
