@@ -1,7 +1,7 @@
 # windows-cpp-guide
 Collection of thoughts on productive windows workflows, specifically for cpp game development
 
-This page is very early in development
+This page is very early in development (May 9, 2023)
 
 Before continuing I am putting this here.
 
