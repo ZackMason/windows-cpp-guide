@@ -16,11 +16,17 @@ too bad, and you will catch lots of mistakes. Best to use this from day one thou
 
 
 # Table Of Contents
+- [Why C++](#why-c++)
 - [Tools](#tools)
 - [Libraries](#libraries)
 - [VSCode](#vs-code)
 - [Compiling](#compiling)
+- [StaticDatabases](#static-databases)
 - [Hot Takes](#hot-takes)
+
+
+# Why C++
+    Modern C++ is perfect for game development due to a number of reasons, such as strong compile time execution, type system, 
 
 # Tools
 
@@ -54,7 +60,7 @@ too bad, and you will catch lots of mistakes. Best to use this from day one thou
 - assimp - annoying and bloat but gets the job done
 
 ## Bad
-- Bullet - just look at how complicated implementing a character controller is. Sure its easy to make a few boxes, but physx is just better in every way.
+- bullet - just look at how complicated implementing a character controller is. Sure its easy to make a few boxes, but PhysX is just better in every way. Also the documentation is very bad compared to PhysX
 
 # VS Code 
 
@@ -148,7 +154,7 @@ if ( MSVC )
 endif()
 
 
-add_subdirectory(ActuallyAGameEngine)
+add_subdirectory(GameEngine)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -157,13 +163,13 @@ file(GLOB_RECURSE src_files
     ${PROJECT_SOURCE_DIR}/src/*.c*
 )
 
-add_compile_options(/bigobj)
-
 include_directories(include)
-include_directories(ActuallyAGameEngine/include)
+include_directories(GameEngine/include)
 add_executable(game ${src_files})
 
+// embed full path for development, it makes everything easier
 target_compile_definitions(game PUBLIC GAME_ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
+// but remember to change to relative for release
 #target_compile_definitions(game PUBLIC GAME_ASSETS_PATH="./assets/") # for release
 
 
@@ -180,10 +186,9 @@ target_link_libraries(tests ${CONAN_LIBS} Engine)
 target_link_libraries(game ${CONAN_LIBS} Engine)
 
 set(PHYSX_ROOT_WIN
-    "C:/Users/zack/Documents/GitHub/PhysX"
+    "C:/Users/z/Documents/GitHub/PhysX"
 )
 
-# https://github.com/nyers33/minimal_glfw_physx/blob/main/src/CMakeLists.txt
 set(PHSYX_LIBS
 	"PhysX_64.lib"
 	"PhysXCommon_64.lib"
@@ -209,19 +214,354 @@ foreach(lib ${PHSYX_LIBS})
 endforeach()
 ```
 
+
+# Hot Game Reload
+
+When working on a large game project, it is very important to be able to make changes to the code while the game is running. Here is a basic example of how to do that. This is a condensed version of hot reloading for windows that comes from Casey Muratori's Handmade Hero Series, a linux or wasm implementation is also possible.
+
+```
+// app_interface.hpp
+
+// included by both the game (dll) and platform (exe)
+
+struct app_input_t {
+    ...
+};
+
+struct app_memory_t {
+    std::byte*  memory;
+    size_t      size;
+
+    bool        running{true};
+
+    app_input_t input;
+
+    // extend with app config info
+};
+
+#define no_mangle extern "C"
+#define export_dll __declspec(dllexport)
+#define export_fn(rt_type) no_mangle export_dll rt_type __cdecl
+
+using app_callback_t = void(__cdecl *)(app_memory_t*);
+struct app_dll_t {
+    void* dll{nullptr};
+
+    app_callback_t on_init{nullptr};
+    app_callback_t on_deinit{nullptr};
+
+    app_callback_t on_update{nullptr};
+    app_callback_t on_render{nullptr};
+
+    // these hooks are sometimes useful
+    app_callback_t on_unload{nullptr};
+    app_callback_t on_reload{nullptr};
+};
+```
+
+```
+// app_platform.cpp 
+
+#include "app_interface.hpp"
+
+no_mangle void __cdecl 
+default_game_callback(app_memory_t* app) {
+    // no op
+}
+
+int main() {
+    app_memory_t app_memory {
+        .memory = VirtualAlloc(APP_SIZE, ...),
+        .size = APP_SIZE,
+    };
+
+    app_dll_t app_dll {
+        .dll = LoadLibraryA("game.dll");
+    };
+    load_game_callbacks(&app_dll);
+
+    while (app_memory.running) {
+        check_and_reload_dll(&app_dll);
+
+        platform_input(&app_memory.input);
+
+        (app_dll.on_update ? app_dll.on_update : default_game_callback)(&app_memory);
+        (app_dll.on_render ? app_dll.on_render : default_game_callback)(&app_memory);
+
+    }
+}
+```
+
+```
+// Game.cpp
+
+#include "app_interface.hpp"
+
+struct game_t {
+
+};
+
+game_t* get_game(app_memory_t* app_memory) {
+    return static_cast<game_t*>(app_memory->memory);
+}
+
+export_fn(void) 
+app_on_init(app_memory_t* app_memory) {
+    game_t* game = get_game(app_memory);
+    new (game) game_t; // construct your game at the start of the memory block, build from there.
+}
+
+export_fn(void) 
+app_on_update(app_memory_t* app_memory) {
+    game_t* game = get_game(app_memory);
+
+    // do game
+}
+```
+
+# Static Databases
+
+Often times in game development its useful to have static game data, such as for levels and game entities.
+One common solution for storing this data is to use a file format such as json or yaml, then parse the files at runtime. This is a fine solution, however we can leverage C++'s type system and aggregate constructs in order to create a much better solution. 
+
+```
+
+namespace game::db {
+
+struct entity_def_t {
+    entity_type type{entity_type::environment};
+    string_t type_name{};
+
+    struct gfx_t {
+        string_t mesh_name{};
+        gfx::material_t material{};
+        string_t albedo_tex{};
+        string_t normal_tex{};
+
+        string_t animations{};
+    } gfx;
+
+    std::optional<character_stats_t> stats{};
+    std::optional<wep::base_weapon_t> weapon{};
+
+    struct physics_t {
+        u32 flags{PhysicsEntityFlags_None};
+        physics::collider_shape_type shape{physics::collider_shape_type::NONE};
+        union {
+            struct box_t {
+                v3f size{};
+            } box;
+            struct sphere_t {
+                f32 radius;
+            } sphere;
+            struct capsule_t {
+                f32 radius;
+                f32 height;
+            } capsule;
+        } shape_def;
+    };
+    std::optional<physics_t> physics{};
+
+    struct particle_emitter_t {
+        u32 count{};
+        f32 rate{};
+        v3f vel{};
+        v3f acl{};
+    };
+    std::optional<particle_emitter_t> emitter{};
+
+    struct child_t {
+        const entity_def_t* entity{0};
+        v3f                 offset{0.0f};
+    };
+    child_t children[10]{};
+};
+
+
+#define DB_ENTRY static constexpr entity_def_t
+
+namespace misc {
+
+DB_ENTRY
+teapot {
+    .type = entity_type::environment,
+    .type_name = "Teapot",
+    .gfx = {
+        .mesh_name = "assets/models/utah-teapot.obj",
+        .material = gfx::material_t::metal(gfx::color::v4::light_gray),
+    },
+    .physics = entity_def_t::physics_t {
+        .flags = PhysicsEntityFlags_Dynamic,
+    #if 1 // use convex
+        .shape = physics::collider_shape_type::CONVEX,
+    #else 
+        .shape = physics::collider_shape_type::SPHERE,
+        .shape_def = {
+            .sphere = {
+                .radius = 1.0f,
+            },
+        },
+    #endif
+    },
+};
+
+DB_ENTRY
+door {
+    .type = entity_type::environment,
+    .type_name = "door",
+    .gfx = {
+        .mesh_name = "door",
+        .material = gfx::material_t::metal(gfx::color::v4::light_gray),
+    },
+    .physics = entity_def_t::physics_t {
+        .flags = PhysicsEntityFlags_Trigger,
+        .shape = physics::collider_shape_type::BOX,
+        .shape_def = {
+            .box = {
+                .size = v3f{1.0f},
+            },
+        },
+    },
+};
+
+}; //namespace misc
+
+namespace rooms {
+
+DB_ENTRY
+room_0 {
+    .type = entity_type::environment,
+    .type_name = "room_0",
+    .gfx = {
+        .mesh_name = "assets/models/rooms/room_0.obj",
+        .material = gfx::material_t::metal(gfx::color::v4::light_gray),
+    },
+    .physics = entity_def_t::physics_t {
+        .flags = PhysicsEntityFlags_Static,
+        .shape = physics::collider_shape_type::TRIMESH,
+    },
+};
+
+DB_ENTRY
+room_01 {
+    .type = entity_type::environment,
+    .type_name = "room_01",
+    .gfx = {
+        .mesh_name = "assets/models/rooms/room_01.obj",
+        .material = gfx::material_t::metal(gfx::color::v4::light_gray),
+    },
+    .physics = entity_def_t::physics_t {
+        .flags = PhysicsEntityFlags_Static,
+        .shape = physics::collider_shape_type::TRIMESH,
+    },
+};
+
+DB_ENTRY
+map_01 {
+    .type = entity_type::environment,
+    .type_name = "map_01",
+    .gfx = {
+        .mesh_name = "assets/models/map_01.obj",
+        .material = gfx::material_t::metal(gfx::color::v4::light_gray),
+    },
+    .physics = entity_def_t::physics_t {
+        .flags = PhysicsEntityFlags_Static,
+        .shape = physics::collider_shape_type::TRIMESH,
+    },
+};
+
+}; //namespace rooms
+
+namespace items {
+
+}; //namespace items
+
+namespace weapons {
+
+DB_ENTRY
+pistol {
+    .type = entity_type::weapon,
+    .type_name = "pistol",
+    .gfx = {
+        .mesh_name = "pistol",
+        .material = gfx::material_t::metal(gfx::color::v4::dark_gray),
+    },
+    .weapon = wep::create_pistol(),
+};
+
+}; // namespace weapons
+
+namespace characters {
+
+DB_ENTRY
+assassin {
+    .type = entity_type::player,
+    .type_name = "assassin",
+    .gfx = {
+        .mesh_name = "assets/models/capsule.obj",
+    },
+    .stats = character_stats_t {
+        .health = {
+            80
+        },
+        .movement = {
+            .move_speed = 1.3f,
+        },
+    },
+    .physics = entity_def_t::physics_t {
+        .flags = PhysicsEntityFlags_Character,
+        .shape = physics::collider_shape_type::CAPSULE,
+        .shape_def = {
+            .capsule = {
+                .radius = 1.0f,
+                .height = 3.0f,
+            },
+        },
+    },
+    .children = {
+        {
+            .entity = &weapons::rifle,
+            .offset = v3f{0.0f},
+        },
+        {
+            .entity = &weapons::pistol,
+            .offset = v3f{0.0f},
+        },
+    },
+};
+
+}; // namespace characters
+
+}; // namespace game::db
+
+...
+
+void spawn_level() {
+    using game::db;
+
+    spawn_player(character::assassin);
+
+    spawn(room:room_01);
+
+    ...
+}
+
+
+
+```
+
+Using a structure such as this allows for static type checking, the ability to call constexpr engine functions, store const pointers, and even create hierarchies. Combining unions/variants and optionals allows for storing a large variety of data, that is fairly easy to reflect on later when it comes to instantiating these "Prefabs" If you ensure that your struct is mem copyable, you can even write and load the structs as binary straight to disk.
+
+
 # Hot Takes
 - linux sucks, but that's why we're here, not a hot take
 - null terminated strings suck
-- thus all str* functions suck, use mem* instead
+- thus all str* functions suck and should be banned from use, use mem* instead
 - no really, they are terrible, stop using them, always store the size
 - malloc sucks, use an allocation pattern that supports many different many allocation backends
-- free is bloat
+- free at the end of a program (and arguably always) is bloat, OS will free resources faster, yes even graphics resources.
 - cpp is a nice language when used right (read not by me)
 - memory management should alway happen at the highest possible level, nodes allocating and managing other nodes is a nightmare of life time spaghetti. Always try to do allocations at least one level up the call stack.
 - stl has a few good parts - span, string_view, array, bitset, tuple, variant
 - stl has a lot of bad parts - vector, map, set, string, function
 - writing code that is easy to step through in a debugger is vital, functional programming greatly hinders this.
-
-
-
-
