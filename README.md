@@ -461,10 +461,6 @@ map_01 {
 
 }; //namespace rooms
 
-namespace items {
-
-}; //namespace items
-
 namespace weapons {
 
 DB_ENTRY
