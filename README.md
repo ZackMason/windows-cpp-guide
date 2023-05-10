@@ -21,7 +21,7 @@ too bad, and you will catch lots of mistakes. Best to use this from day one thou
 - [Libraries](#libraries)
 - [VSCode](#vs-code)
 - [Compiling](#compiling)
-- [StaticDatabases](#static-databases)
+- [Static Databases](#static-databases)
 - [Hot Takes](#hot-takes)
 
 
