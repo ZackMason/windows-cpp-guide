@@ -328,7 +328,7 @@ Often times in game development it's useful to have static game data, such as fo
 One common solution for storing this data is to use a file format such as json or yaml, then parse the files at runtime. This works fine, however we can leverage C++'s type system and aggregate constructors in order to create a much better solution. 
 
 ```C++
-namespace game::db {
+namespace game::database {
 
 struct entity_def_t {
     entity_type type{entity_type::environment};
@@ -528,12 +528,12 @@ assassin {
 
 }; // namespace characters
 
-}; // namespace game::db
+}; // namespace game::database
 
 ...
 
 void spawn_level() {
-    using game::db;
+    using game::database;
 
     spawn_player(character::assassin);
 
