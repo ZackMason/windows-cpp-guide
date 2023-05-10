@@ -322,7 +322,7 @@ app_on_update(app_memory_t* app_memory) {
 }
 ```
 
-# Prefab
+# Prefabs
 
 Often times in game development it's useful to have static game data, such as for levels and game entities.
 One common solution for storing this data is to use a file format such as json or yaml, then parse the files at runtime. This works fine, however we can leverage C++'s type system and aggregate constructors in order to create a much better solution. 
