@@ -20,13 +20,14 @@ Turning it on for the first time in projects that are well in to development can
 - [Tools](#tools)
 - [Libraries](#libraries)
 - [VSCode](#vs-code)
-- [Compiling](#compiling)
-- [Static Databases](#static-databases)
+- [Compiling](#compiling) 
+- [Hot Reloading](#hot-reloading) 
+- [Game Prefabs Using C++'s Type System](#prefabs)
 - [Vulkan Resources](#vulkan-resources)
 - [Hot Takes](#hot-takes)
 
 # Why C++
-Modern C++ is perfect for game development due to a number of reasons, such as strong type system with compile time execution, robust library support, console support, and more.
+Modern C++ is perfect for game development due to a number of reasons, such as a strong type system, powerful compile time code execution, robust library support, console support, and more.
 
 # Tools
 
@@ -321,7 +322,7 @@ app_on_update(app_memory_t* app_memory) {
 }
 ```
 
-# Static Databases
+# Prefab
 
 Often times in game development it's useful to have static game data, such as for levels and game entities.
 One common solution for storing this data is to use a file format such as json or yaml, then parse the files at runtime. This works fine, however we can leverage C++'s type system and aggregate constructors in order to create a much better solution. 
