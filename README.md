@@ -35,12 +35,12 @@ Modern C++ is perfect for game development due to a number of reasons, such as s
 - [clang](https://clang.llvm.org/) - compiler, msvc is generally more up to date, but good to have
 - [vscode](https://code.visualstudio.com/) - ide
 - [RemedyBG](https://remedybg.itch.io/remedybg) - amazing debugger, only on windows, costs ~30$, worth every penny
-- [cmake](https://cmake.org/) - build system
+- [cmder](https://cmder.app/) - console emulator with git and linux commands, the best of both CMD and bash
 - [conan](https://conan.io/) - package manager
-- [emscripten](https://emscripten.org/) - wasm compiler
-- [RenderDoc](https://renderdoc.org/) - if doing graphics this is required, use after 5-10 minutes of being stuck
-- [cmder](https://cmder.app/) - console emulator with git and linux commands
+- [cmake](https://cmake.org/) - build system
 - [ninja](https://ninja-build.org/) - if using cmake
+- [RenderDoc](https://renderdoc.org/) - if doing graphics this is required, use after 5-10 minutes of being stuck on a bug
+- [emscripten](https://emscripten.org/) - wasm compiler
 
 ## Okay
 - [milton](https://www.miltonpaint.com/) - infinite drawing board - Sketching problems is very underrated, especially in game dev
@@ -51,7 +51,7 @@ Modern C++ is perfect for game development due to a number of reasons, such as s
 - [fmt](https://github.com/fmtlib/fmt) - formatted printing
 - [sdl](https://github.com/libsdl-org/SDL) - cross platform graphics / window management
 - [stb](https://github.com/nothings/stb) - png, text, etc
-- [vulkan](https://www.vulkan.org/) - graphics api
+- [vulkan](https://www.vulkan.org/) - graphics api, you probably need a few years of OpenGL/DirectX experience before starting vulkan
 - [directx](https://learn.microsoft.com/en-us/windows/win32/directx) - graphics api
 - [PhysX 5.0](https://github.com/NVIDIA-Omniverse/PhysX) - physics engine - BSD3
 
