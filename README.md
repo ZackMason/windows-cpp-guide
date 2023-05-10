@@ -9,7 +9,7 @@ Before continuing I am putting this here.
 
 For the love of god please turn on your compiler warnings when programming in C/C++, you can do this using -Wall -Werror -Wconversion if using clang, or /W4 /WX on MSVC. Feel free to disable things like unused variables and functions, and push/pop disable warnings inside of dependencies if needed, but all other warning should be enabled.
 
-The large majority of bugs that I see people asking would be caught if compiler warnings were properly set up
+The large majority of bugs that I see people asking for help with would be caught if compiler warnings were properly set up.
 
 Turning it on for the first time in projects that are well in to development can be daunting, but it's really not
 too bad, and you will catch lots of mistakes. Best to use this from day one though.
