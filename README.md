@@ -39,7 +39,7 @@ Native desktop apps are much easier to implement if that's your thing, and you h
 
 Linux is also a fragmented mess and a nightmare to develop for. Most people who argue against these points haven't actually done much development on Windows, or never took the time to learn how to properly develop on the OS.
 
-Setting up a Windows development environment from a fresh install takes an afternoon, whereas on Linux it could take days to get everything set up.
+Setting up a Windows development environment from a fresh install takes an afternoon, whereas on Linux it could take days to get just the basics set up.
 
 I can hear the Linux fans  right now:
 
