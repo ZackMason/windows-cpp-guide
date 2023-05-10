@@ -321,8 +321,8 @@ app_on_update(app_memory_t* app_memory) {
 
 # Static Databases
 
-Often times in game development its useful to have static game data, such as for levels and game entities.
-One common solution for storing this data is to use a file format such as json or yaml, then parse the files at runtime. This is a fine solution, however we can leverage C++'s type system and aggregate constructs in order to create a much better solution. 
+Often times in game development it's useful to have static game data, such as for levels and game entities.
+One common solution for storing this data is to use a file format such as json or yaml, then parse the files at runtime. This works fine, however we can leverage C++'s type system and aggregate constructors in order to create a much better solution. 
 
 ```
 
@@ -384,6 +384,7 @@ namespace misc {
 
 DB_ENTRY
 teapot {
+    // unlike json, we can add comments anywhere also!
     .type = entity_type::environment,
     .type_name = "Teapot",
     .gfx = {
@@ -392,16 +393,8 @@ teapot {
     },
     .physics = entity_def_t::physics_t {
         .flags = PhysicsEntityFlags_Dynamic,
-    #if 1 // use convex
+    
         .shape = physics::collider_shape_type::CONVEX,
-    #else 
-        .shape = physics::collider_shape_type::SPHERE,
-        .shape_def = {
-            .sphere = {
-                .radius = 1.0f,
-            },
-        },
-    #endif
     },
 };
 
@@ -411,7 +404,7 @@ door {
     .type_name = "door",
     .gfx = {
         .mesh_name = "door",
-        .material = gfx::material_t::metal(gfx::color::v4::light_gray),
+        .material = gfx::material_t::plastic(gfx::color::v4::light_gray),
     },
     .physics = entity_def_t::physics_t {
         .flags = PhysicsEntityFlags_Trigger,
@@ -546,11 +539,9 @@ void spawn_level() {
     ...
 }
 
-
-
 ```
 
-Using a structure such as this allows for static type checking, the ability to call constexpr engine functions, store const pointers, and even create hierarchies. Combining unions/variants and optionals allows for storing a large variety of data, that is fairly easy to reflect on later when it comes to instantiating these "Prefabs" If you ensure that your struct is mem copyable, you can even write and load the structs as binary straight to disk.
+Using a structure such as this allows for static type checking, the ability to call constexpr engine functions, store const pointers, and even create hierarchies. Combining unions/variants and optionals allows for storing a large variety of data, that is fairly easy to reflect on later when it comes to instantiating these "Prefabs". If you ensure that your struct is mem copyable, you can even write and load the structs as binary straight to disk. One thing you might find annoying is that fields need to be listed in order, but I find that this helps keeps all of the data consistent and easy to read. Another thing that you could do is load these symbols from a dll, perhaps for modding.
 
 
 # Hot Takes
