@@ -232,7 +232,7 @@ struct app_input_t {
 };
 
 struct app_memory_t {
-    std::byte*  memory;
+    std::byte*  memory; // could also have multiple memory regions
     size_t      size;
 
     bool        running{true};
@@ -304,14 +304,16 @@ struct game_t {
 
 };
 
+// cast start of app_memory to your game state struct
 game_t* get_game(app_memory_t* app_memory) {
     return reinterpret_cast<game_t*>(app_memory->memory);
 }
 
+// construct your game at the start of the memory block, build from there.
 export_fn(void) 
 app_on_init(app_memory_t* app_memory) {
     game_t* game = get_game(app_memory);
-    new (game) game_t; // construct your game at the start of the memory block, build from there.
+    new (game) game_t; 
 }
 
 export_fn(void) 
