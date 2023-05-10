@@ -80,7 +80,7 @@ Personally I find using cl (the compiler that visual studio uses in the backgrou
 
 here what that might look like with a batch script
 
-```
+```batch
 @echo off
 
 rem MSVC build script
@@ -136,7 +136,7 @@ You will need to learn how each of these tools work. learning cmake is unfortuna
 
 Heres what a cmake script might look like 
 
-```
+```CMake
 cmake_minimum_required(VERSION 3.8.12)
 
 project(game C CXX)
@@ -221,7 +221,7 @@ endforeach()
 
 When working on a large game project, it is very important to be able to make changes to the code while the game is running. Here is a basic example of how to do that. This is a condensed version of hot reloading for windows that comes from Casey Muratori's Handmade Hero Series, a linux or wasm implementation is also possible.
 
-```
+```C++
 // app_interface.hpp
 
 // included by both the game (dll) and platform (exe)
@@ -261,7 +261,7 @@ struct app_dll_t {
 };
 ```
 
-```
+``` C++
 // app_platform.cpp 
 
 #include "app_interface.hpp"
@@ -294,7 +294,7 @@ int main() {
 }
 ```
 
-```
+``` C++
 // Game.cpp
 
 #include "app_interface.hpp"
@@ -326,8 +326,7 @@ app_on_update(app_memory_t* app_memory) {
 Often times in game development it's useful to have static game data, such as for levels and game entities.
 One common solution for storing this data is to use a file format such as json or yaml, then parse the files at runtime. This works fine, however we can leverage C++'s type system and aggregate constructors in order to create a much better solution. 
 
-```
-
+```C++
 namespace game::db {
 
 struct entity_def_t {
