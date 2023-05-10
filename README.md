@@ -3,6 +3,8 @@ Collection of thoughts on productive windows workflows, specifically for cpp gam
 
 This page is very early in development (May 8, 2023)
 
+# **Read**
+
 Before continuing I am putting this here.
 
 For the love of god please turn on your compiler warnings when programming in C/C++
