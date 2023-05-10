@@ -31,7 +31,24 @@ Turning it on for the first time in projects that are well in to development can
 Modern C++ is perfect for game development due to a number of reasons, such as a strong type system, powerful compile time code execution, robust library support, console support, and more.
 
 # Why Windows
-Better tooling than linux, 98% of PC gamers use windows according to Steam, DirectX is much better than OpenGL, can easily start developing on a fresh install.
+Better tooling than Linux, 98% of PC gamers use windows according to Steam, DirectX11 is much better than OpenGL, can easily start developing on a fresh install.
+
+Debuggers on Linux are terrible, GDB is way too slow and clunky for game development. The debugging experience on Linux is completely unusable except for the most basic of problems.
+
+Native desktop apps are much easier to implement if that's your thing, and you have many options.
+
+Linux is also a fragmented mess and a nightmare to develop for. Most people who argue against these points haven't actually done much development on Windows, or never took the time to learn how to properly develop on the OS.
+
+Setting up a Windows development environment from a fresh install takes an afternoon, whereas on Linux it could take days to get everything set up.
+
+I can hear the Linux fans  right now:
+
+"But Linux package management makes C++ so much easier!", Windows has package managers, and setting up dependencies is such a minor part of a project that it doesn't matter.
+
+"But what about bash!", you can use bash on Windows.
+
+"I hate Visual Studio!", Don't use it?
+
 
 
 # Tools
@@ -52,7 +69,7 @@ Better tooling than linux, 98% of PC gamers use windows according to Steam, Dire
 
 ## Okay
 - [milton](https://www.miltonpaint.com/) - infinite drawing board - Sketching problems is very underrated, especially in game dev
-
+- [dr memory](https://drmemory.org/) - find memory leaks, better than valgrind
 # Libraries
 
 ## Highly Recommended
