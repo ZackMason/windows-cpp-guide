@@ -131,9 +131,9 @@ popd build
 
 ## CMAKE
 
-A good option if you have a lot of dependencies is to use cmake, ninja, and conan. I have an old script that initializes projects with a cmake and optional conan setup [here](https://github.com/ZackMason/cpp_init).
+A good option if you have a lot of dependencies is to use cmake, ninja, and conan. I have an old script that initializes projects with a cmake and optional conan setup here called [cpp_init](https://github.com/ZackMason/cpp_init).
 
-You will need to learn how each of these tools work. learning cmake is unfortunately not very easy in my experience, there is a lot of dated info. Reading through the script linked above will give you a starting idea.
+You will need to learn how each of these tools work. Learning cmake is unfortunately not very easy in my experience, there is a lot of dated info. Reading through the script linked above will give you a starting idea.
 
 Heres what a cmake script might look like 
 
@@ -305,7 +305,7 @@ struct game_t {
 };
 
 game_t* get_game(app_memory_t* app_memory) {
-    return static_cast<game_t*>(app_memory->memory);
+    return reinterpret_cast<game_t*>(app_memory->memory);
 }
 
 export_fn(void) 
