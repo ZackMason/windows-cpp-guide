@@ -26,7 +26,7 @@ Turning it on for the first time in projects that are well in to development can
 - [Hot Takes](#hot-takes)
 
 # Why C++
-    Modern C++ is perfect for game development due to a number of reasons, such as strong type system with compile time execution, robust library support, console support, and more.
+Modern C++ is perfect for game development due to a number of reasons, such as strong type system with compile time execution, robust library support, console support, and more.
 
 # Tools
 
