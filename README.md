@@ -17,6 +17,7 @@ Turning it on for the first time in projects that are well in to development can
 
 # Table Of Contents
 - [Why C++](#why-c++)
+- [Why Windows](#why-windows)
 - [Tools](#tools)
 - [Libraries](#libraries)
 - [VSCode](#vs-code)
@@ -29,18 +30,24 @@ Turning it on for the first time in projects that are well in to development can
 # Why C++
 Modern C++ is perfect for game development due to a number of reasons, such as a strong type system, powerful compile time code execution, robust library support, console support, and more.
 
+# Why Windows
+Better tooling than linux, 98% of PC gamers use windows according to Steam, DirectX is much better than OpenGL, can easily start developing on a fresh install.
+
+
 # Tools
 
-## Highly Recommended
+## Required
 - [visual studio](https://visualstudio.microsoft.com/) - compiler
 - [clang](https://clang.llvm.org/) - compiler, msvc is generally more up to date, but good to have
-- [vscode](https://code.visualstudio.com/) - ide
-- [RemedyBG](https://remedybg.itch.io/remedybg) - amazing debugger, only on windows, costs ~30$, worth every penny
-- [cmder](https://cmder.app/) - console emulator with git and linux commands, the best of both CMD and bash
-- [conan](https://conan.io/) - package manager
 - [cmake](https://cmake.org/) - build system
-- [ninja](https://ninja-build.org/) - if using cmake
-- [RenderDoc](https://renderdoc.org/) - if doing graphics this is required, use after 5-10 minutes of being stuck on a bug
+
+## Highly Recommended
+- [RemedyBG](https://remedybg.itch.io/remedybg) - amazing debugger, only on windows, costs ~30$, worth every penny
+- [cmder](https://cmder.app/) - console emulator with git and linux commands, the best of both cmd and bash
+- [vscode](https://code.visualstudio.com/) - ide
+- [conan](https://conan.io/) - package manager
+- [ninja](https://ninja-build.org/) - if using cmake for your build
+- [renderdoc](https://renderdoc.org/) - if doing graphics this is required, use after 5-10 minutes of being stuck on a bug
 - [emscripten](https://emscripten.org/) - wasm compiler
 
 ## Okay
