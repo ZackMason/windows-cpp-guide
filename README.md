@@ -169,9 +169,9 @@ include_directories(include)
 include_directories(GameEngine/include)
 add_executable(game ${src_files})
 
-// embed full path for development, it makes everything easier
+# embed full path for development, it makes everything easier
 target_compile_definitions(game PUBLIC GAME_ASSETS_PATH="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-// but remember to change to relative for release
+# but remember to change to relative for release
 #target_compile_definitions(game PUBLIC GAME_ASSETS_PATH="./assets/") # for release
 
 
