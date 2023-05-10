@@ -3,13 +3,11 @@ Collection of thoughts on productive windows workflows, specifically for cpp gam
 
 This page is very early in development (May 8, 2023)
 
-# **Read**
+# Important
 
 Before continuing I am putting this here.
 
-For the love of god please turn on your compiler warnings when programming in C/C++
-using -Wall -Werror -Wconversion if using clang, or /W4 /WX on MSVC.
-Feel free to disable things like unused variables and functions, and push/pop disable warnings inside of dependencies if needed, but all other warning should be fixed.
+For the love of god please turn on your compiler warnings when programming in C/C++, you can do this using -Wall -Werror -Wconversion if using clang, or /W4 /WX on MSVC. Feel free to disable things like unused variables and functions, and push/pop disable warnings inside of dependencies if needed, but all other warning should be enabled.
 
 The large majority of bugs that I see people asking would be caught if compiler warnings were properly set up
 
