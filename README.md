@@ -364,13 +364,6 @@ struct entity_def_t {
     };
     std::optional<physics_body_t> physics{};
 
-    struct particle_emitter_t {
-        u32 count{};
-        f32 rate{};
-        v3f vel{};
-        v3f acl{};
-    };
-    std::optional<particle_emitter_t> emitter{};
 
     struct child_t {
         const entity_def_t* entity{0};
