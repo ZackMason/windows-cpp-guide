@@ -1,7 +1,9 @@
 # windows-cpp-guide
-Collection of thoughts on productive windows workflows, specifically for cpp game development
+Collection of thoughts on productive windows workflows, **specifically for cpp game development**, but non game devs might find this useful 
 
 This page is very early in development (May 8, 2023)
+
+Everything on this page is just my **personal opinion**. It's important that you find your own workflow that is most productive and best suits your goals, it might look something like this, or it might not.
 
 # Important
 
@@ -9,11 +11,9 @@ Before continuing I am putting this here.
 
 For the love of god please turn on your compiler warnings when programming in C/C++, you can do this using -Wall -Werror -Wconversion if using clang, or /W4 /WX on MSVC. Feel free to disable things like unused variables and functions, and push/pop disable warnings inside of dependencies if needed, but all other warning should be enabled.
 
-The large majority of bugs that I see people asking for help with would be caught if compiler warnings were properly set up.
+A large majority of the bugs that I see people asking for help with would be caught if compiler warnings were properly set up. Yes it's a little annoying at first and takes some getting used to, but in the long run this will save you lots of time and pain.
 
-Turning it on for the first time in projects that are well in to development can be daunting, but it's really not
-too bad, and you will catch lots of mistakes. Best to use this from day one though.
-
+Turning it on for the first time in projects that are well in to development can be daunting, but it's really not too bad, and you will catch lots of mistakes. Best to use this from day one though.
 
 # Table Of Contents
 - [Why C++](#why-c++)
@@ -22,45 +22,47 @@ too bad, and you will catch lots of mistakes. Best to use this from day one thou
 - [VSCode](#vs-code)
 - [Compiling](#compiling)
 - [Static Databases](#static-databases)
+- [Vulkan Resources](#vulkan-resources)
 - [Hot Takes](#hot-takes)
 
-
 # Why C++
-    Modern C++ is perfect for game development due to a number of reasons, such as strong compile time execution, type system, 
+    Modern C++ is perfect for game development due to a number of reasons, such as strong type system with compile time execution, robust library support, console support, and more.
 
 # Tools
 
 ## Highly Recommended
-- visual studio - compiler
-- clang - compiler, msvc is generally more up to date, but good to have
-- vscode - ide
-- cmake - build system
-- ninja - if using cmake
-- conan - package manager
-- emscripten - wasm compiler
-- RemedyBG - amazing debugger, only on windows
-- RenderDoc - if doing graphics this is required, use after 5-10 minutes of being stuck
-- Milton - infinite drawing board - Sketching problems is very underrated, especially in game dev
-- cmder - console emulator with git and linux commands
+- [visual studio](https://visualstudio.microsoft.com/) - compiler
+- [clang](https://clang.llvm.org/) - compiler, msvc is generally more up to date, but good to have
+- [vscode](https://code.visualstudio.com/) - ide
+- [RemedyBG](https://remedybg.itch.io/remedybg) - amazing debugger, only on windows, costs ~30$, worth every penny
+- [cmake](https://cmake.org/) - build system
+- [conan](https://conan.io/) - package manager
+- [emscripten](https://emscripten.org/) - wasm compiler
+- [RenderDoc](https://renderdoc.org/) - if doing graphics this is required, use after 5-10 minutes of being stuck
+- [cmder](https://cmder.app/) - console emulator with git and linux commands
+- [ninja](https://ninja-build.org/) - if using cmake
+
+## Okay
+- [milton](https://www.miltonpaint.com/) - infinite drawing board - Sketching problems is very underrated, especially in game dev
 
 # Libraries
 
 ## Highly Recommended
-- fmt - formatted printing
-- sdl - cross platform graphics / window management
-- stb - png, text
-- vulkan - graphics api
-- directx - graphics api
-- PhysX - physics engine
+- [fmt](https://github.com/fmtlib/fmt) - formatted printing
+- [sdl](https://github.com/libsdl-org/SDL) - cross platform graphics / window management
+- [stb](https://github.com/nothings/stb) - png, text, etc
+- [vulkan](https://www.vulkan.org/) - graphics api
+- [directx](https://learn.microsoft.com/en-us/windows/win32/directx) - graphics api
+- [PhysX 5.0](https://github.com/NVIDIA-Omniverse/PhysX) - physics engine - BSD3
 
 ## Okay
-- opengl - graphics engine
-- smfl - cross platform graphics (no wasm, thus bad for jams)
-- raylib - cross platform graphics (has wasm, don't like personally)
-- assimp - annoying and bloat but gets the job done
+- [opengl](https://learnopengl.com/) - graphics engine
+- [smfl](https://www.sfml-dev.org/) - cross platform graphics (no wasm, thus bad for jams)
+- [raylib](https://www.raylib.com/) - cross platform graphics (has wasm, don't like personally)
+- [assimp](https://github.com/assimp/assimp) - annoying and bloat but gets the job done
 
 ## Bad
-- bullet - just look at how complicated implementing a character controller is. Sure its easy to make a few boxes, but PhysX is just better in every way. Also the documentation is very bad compared to PhysX
+- [bullet](https://github.com/bulletphysics/bullet3) - just look at how complicated implementing a character controller is. Sure its easy to make a few boxes, but PhysX is just better in every way. Also the documentation is very bad compared to PhysX
 
 # VS Code 
 
@@ -342,9 +344,9 @@ struct entity_def_t {
     } gfx;
 
     std::optional<character_stats_t> stats{};
-    std::optional<wep::base_weapon_t> weapon{};
+    std::optional<base_weapon_t> weapon{};
 
-    struct physics_t {
+    struct physics_body_t {
         u32 flags{PhysicsEntityFlags_None};
         physics::collider_shape_type shape{physics::collider_shape_type::NONE};
         union {
@@ -360,7 +362,7 @@ struct entity_def_t {
             } capsule;
         } shape_def;
     };
-    std::optional<physics_t> physics{};
+    std::optional<physics_body_t> physics{};
 
     struct particle_emitter_t {
         u32 count{};
@@ -382,6 +384,7 @@ struct entity_def_t {
 
 namespace misc {
 
+// only fill out what you need
 DB_ENTRY
 teapot {
     // unlike json, we can add comments anywhere also!
@@ -391,7 +394,7 @@ teapot {
         .mesh_name = "assets/models/utah-teapot.obj",
         .material = gfx::material_t::metal(gfx::color::v4::light_gray),
     },
-    .physics = entity_def_t::physics_t {
+    .physics = entity_def_t::physics_body_t {
         .flags = PhysicsEntityFlags_Dynamic,
     
         .shape = physics::collider_shape_type::CONVEX,
@@ -406,7 +409,7 @@ door {
         .mesh_name = "door",
         .material = gfx::material_t::plastic(gfx::color::v4::light_gray),
     },
-    .physics = entity_def_t::physics_t {
+    .physics = entity_def_t::physics_body_t {
         .flags = PhysicsEntityFlags_Trigger,
         .shape = physics::collider_shape_type::BOX,
         .shape_def = {
@@ -429,7 +432,7 @@ room_0 {
         .mesh_name = "assets/models/rooms/room_0.obj",
         .material = gfx::material_t::metal(gfx::color::v4::light_gray),
     },
-    .physics = entity_def_t::physics_t {
+    .physics = entity_def_t::physics_body_t {
         .flags = PhysicsEntityFlags_Static,
         .shape = physics::collider_shape_type::TRIMESH,
     },
@@ -443,7 +446,7 @@ room_01 {
         .mesh_name = "assets/models/rooms/room_01.obj",
         .material = gfx::material_t::metal(gfx::color::v4::light_gray),
     },
-    .physics = entity_def_t::physics_t {
+    .physics = entity_def_t::physics_body_t {
         .flags = PhysicsEntityFlags_Static,
         .shape = physics::collider_shape_type::TRIMESH,
     },
@@ -457,7 +460,7 @@ map_01 {
         .mesh_name = "assets/models/map_01.obj",
         .material = gfx::material_t::metal(gfx::color::v4::light_gray),
     },
-    .physics = entity_def_t::physics_t {
+    .physics = entity_def_t::physics_body_t {
         .flags = PhysicsEntityFlags_Static,
         .shape = physics::collider_shape_type::TRIMESH,
     },
@@ -501,7 +504,7 @@ assassin {
             .move_speed = 1.3f,
         },
     },
-    .physics = entity_def_t::physics_t {
+    .physics = entity_def_t::physics_body_t {
         .flags = PhysicsEntityFlags_Character,
         .shape = physics::collider_shape_type::CAPSULE,
         .shape_def = {
@@ -543,6 +546,11 @@ void spawn_level() {
 
 Using a structure such as this allows for static type checking, the ability to call constexpr engine functions, store const pointers, and even create hierarchies. Combining unions/variants and optionals allows for storing a large variety of data, that is fairly easy to reflect on later when it comes to instantiating these "Prefabs". If you ensure that your struct is mem copyable, you can even write and load the structs as binary straight to disk. One thing you might find annoying is that fields need to be listed in order, but I find that this helps keeps all of the data consistent and easy to read. Another thing that you could do is load these symbols from a dll, perhaps for modding.
 
+# Vulkan Resources
+
+- [vkguide.dev](https://vkguide.dev/) - Very good, focuses on building a usable engine, with GPU driven rendering
+- [Sascha Willems](https://github.com/SaschaWillems/Vulkan) - The goat himself
+- [vulkan tutorial](https://vulkan-tutorial.com/) - extremely basic, but a good start.
 
 # Hot Takes
 - linux sucks, but that's why we're here, not a hot take
@@ -551,8 +559,8 @@ Using a structure such as this allows for static type checking, the ability to c
 - no really, they are terrible, stop using them, always store the size
 - malloc sucks, use an allocation pattern that supports many different many allocation backends
 - free at the end of a program (and arguably always) is bloat, OS will free resources faster, yes even graphics resources.
-- cpp is a nice language when used right (read not by me)
-- memory management should alway happen at the highest possible level, nodes allocating and managing other nodes is a nightmare of life time spaghetti. Always try to do allocations at least one level up the call stack.
+- cpp is a nice language when used right (ie not by me)
+- memory management should always happen at the highest possible level, nodes allocating and managing other nodes is a nightmare of life time spaghetti. Always try to do allocations at least one level up the call stack.
 - stl has a few good parts - span, string_view, array, bitset, tuple, variant
 - stl has a lot of bad parts - vector, map, set, string, function
-- writing code that is easy to step through in a debugger is vital, functional programming greatly hinders this.
+- writing code that is easy to step through in a debugger is vital, functional programming and OOP greatly hinders this.
